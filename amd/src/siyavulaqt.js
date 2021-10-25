@@ -7,6 +7,11 @@ export const init = (chktrue, chkfalse) => {
     var timer = window.setInterval(() => {
         var height = $('#siyavulaQContainer').contents().find('.sv-region-main').height();
         
+        var qtvalue = $("#siyavulaQContainer").contents().find(".sv-form__actions")
+        if(qtvalue.length){
+            $("#siyavulaQContainer").contents().find(".sv-form__actions").remove();
+        }
+        
         $('#siyavulaQContainer').height(height + 40);
         
         if($('#siyavulaQContainer').contents().find('.feedback--incorrect').length > 0){

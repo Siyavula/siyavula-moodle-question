@@ -36,10 +36,14 @@ defined('MOODLE_INTERNAL') || die();
 class qtype_siyavulaqt_renderer extends qtype_renderer {
     public function formulation_and_controls(question_attempt $qa,
             question_display_options $options) {
+        
+        global $PAGE;
+                
+        $nextqt = optional_param('nextqr', '', PARAM_INT);
 
         $question = $qa->get_question();
         $response = $qa->get_last_qt_var('answer', '');
-
+        
         $inputname = $qa->get_qt_field_name('answer');
         $trueattributes = array(
             'type' => 'radio',
@@ -97,15 +101,30 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
         $result = '';
         
-        /*$result .= html_writer::tag('div', $question->format_questiontext($qa),
-                array('class' => 'qtext'));*/
-        $qid = $question->format_questiontext($qa);
-        $qid = strip_tags($qid);
+        // Get the standalone.mustache
+        $standalone_page = $question->format_questiontext($qa);
+        //Strip all tags of the mustache, only left the text inside <script>
+        $standalone_strip = strip_tags($standalone_page);
+        // remove const, var, spaces, tabs etc...;
+        $standalone_vars = str_replace(['const ', 'var '], '', $standalone_strip);
+        $standalone_vars = preg_replace('/\s+/S', "", $standalone_vars);
+        // Get array exploded by ;
+        $standalone_vars = explode(';', $standalone_vars);
+        $siyavula_vars = [];
         
+        foreach($standalone_vars as $value) {
+            if(!$value) continue;
+            // explo by =
+            $value = explode('=', $value);
+            $key = preg_replace('/\s+/S', "", $value[0]);
+            $equal = preg_replace('/\s+/S', "", $value[1]);
+            $siyavula_vars[$key] = str_replace("'", '', $equal);
+        }
         global $PAGE;
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' => $trueattributes, 'chkfalse' => $falseattributes]);
-        $iframeUrl = new moodle_url('/question/type/siyavulaqt/embedquestion.php', array('qid' => $qid));
-        
+        // Only need templateId and all_ids
+        $iframeUrl = new moodle_url('/question/type/siyavulaqt/embedquestion.php', ['templateId' => $siyavula_vars['templateId'] , 'all_ids' => $siyavula_vars['all_ids']]);
+
         $result .= html_writer::tag('iframe', '', array(
                                 'id' => 'siyavulaQContainer',
                                 'src'=>$iframeUrl,
@@ -129,11 +148,19 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                     $question->get_validation_error($responsearray),
                     array('class' => 'validationerror'));
         }
+        
+        $url = $_SERVER["REQUEST_URI"];
+        $findme  = '/mod/quiz/review.php';
+        $pos = strpos($url, $findme);
 
-        return $result;
+        if($pos === false){
+           return $result; 
+        }
+        
     }
 
     public function specific_feedback(question_attempt $qa) {
+        
         $question = $qa->get_question();
         $response = $qa->get_last_qt_var('answer', '');
 
