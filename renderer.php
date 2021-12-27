@@ -26,7 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-
+require_once($CFG->dirroot . '/filter/siyavula/lib.php');
+        
 /**
  * Generates the output for true-false questions.
  *
@@ -36,7 +37,6 @@ defined('MOODLE_INTERNAL') || die();
 class qtype_siyavulaqt_renderer extends qtype_renderer {
     public function formulation_and_controls(question_attempt $qa,
             question_display_options $options) {
-        
         global $PAGE;
                 
         $nextqt = optional_param('nextqr', '', PARAM_INT);
@@ -103,31 +103,51 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         
         // Get the standalone.mustache
         $standalone_page = $question->format_questiontext($qa);
+        
         //Strip all tags of the mustache, only left the text inside <script>
         $standalone_strip = strip_tags($standalone_page);
-        // remove const, var, spaces, tabs etc...;
-        $standalone_vars = str_replace(['const ', 'var '], '', $standalone_strip);
-        $standalone_vars = preg_replace('/\s+/S', "", $standalone_vars);
-        // Get array exploded by ;
-        $standalone_vars = explode(';', $standalone_vars);
-        $siyavula_vars = [];
         
-        foreach($standalone_vars as $value) {
-            if(!$value) continue;
-            // explo by =
-            $value = explode('=', $value);
-            $key = preg_replace('/\s+/S', "", $value[0]);
-            $equal = preg_replace('/\s+/S', "", $value[1]);
-            $siyavula_vars[$key] = str_replace("'", '', $equal);
+        $standalone_strip = str_replace("sy-",' ',$standalone_strip);
+        
+        // If we detext a "," then we will use [0] for the question ID, and [1] for the seed 
+        $standalone_strip = explode('|', $standalone_strip);
+        
+        if(isset($standalone_strip[1])){
+            $seed = (int) $standalone_strip[1];
+            $standalone_strip = $standalone_strip[0];
+        }else{
+            $standalone_strip = $standalone_strip[0];
         }
-        global $PAGE;
+        
+        $randomseed = (isset($seed) ? $seed : rand(1, 99999));
+
+        $client_ip       = $_SERVER['REMOTE_ADDR'];
+        $siyavula_config = get_config('filter_siyavula');
+
+        $token = siyavula_get_user_token($siyavula_config, $client_ip);
+       
+        $user_token = siyavula_get_external_user_token($siyavula_config, $client_ip, $token);
+        
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' => $trueattributes, 'chkfalse' => $falseattributes]);
         // Only need templateId and all_ids
-        $iframeUrl = new moodle_url('/question/type/siyavulaqt/embedquestion.php', ['templateId' => $siyavula_vars['templateId'] , 'all_ids' => $siyavula_vars['all_ids']]);
+        $iframeUrl = new moodle_url('/question/type/siyavulaqt/embedquestion.php', ['questionid' => $standalone_strip, 'random_seed' => $randomseed]);
 
-        $result .= html_writer::tag('iframe', '', array(
+        $questionapi = get_activity_standalone($siyavula_activity_id,$token, $user_token->token,$siyavula_config->url_base,$random_seed);
+
+        $activityid  = $questionapi->activity->id;
+        $responseid  = $questionapi->response->id;
+
+        $idsq = "";
+        $next_id = false;
+        $external_token = $user_token->token;
+        $baseurl = $siyavula_config->url_base;
+        $currenturl = $PAGE->URL;
+        
+        $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl,$token,$external_token,$activityid,$responseid,$idsq,$currenturl->__toString(),$next_id,$standalone_strip]);
+
+        $result .= html_writer::tag('iframe', array(
                                 'id' => 'siyavulaQContainer',
-                                'src'=>$iframeUrl,
+                                'src'=>  $iframeUrl,
                                 'style' => 'width: 100%; padding: 20px; background-color: white; border: none;'));
         
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
