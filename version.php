@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qtype_siyavulaqt';
-$plugin->version   = 2021090901;
+$plugin->version   = 2021122700;
 
 $plugin->requires  = 2019111809;
 
