@@ -31,8 +31,40 @@ define(['jquery','core/ajax'], function ($,Ajax) {
                                     fixMathJax.innerHTML = '';
                                 }
                                 delete(window.MathJax); // This is for load the correct symbols of MathJAx/Latex in the html response answer
+                                const iframeContent = document.querySelector('#siyavulaQContainer');
+                                if(iframeContent) {
+                                    console.log(iframeContent.contentWindow.MathJax);
+                                    delete(iframeContent.contentWindow.MathJax)
+                                }
                                 var dataresponse = JSON.parse(response.response);
                                 var html = dataresponse.response.question_html
+                                
+                                function insertScript(doc, target, src, callback) {
+                                    var s = doc.createElement("script");
+                                    s.type = "text/javascript";
+                                    if(callback) {
+                                        if (s.readyState){  //IE
+                                            s.onreadystatechange = function(){
+                                                if (s.readyState == "loaded" ||
+                                                    s.readyState == "complete"){
+                                                    s.onreadystatechange = null;
+                                                    callback();
+                                                }
+                                            };
+                                        } else {  //Others
+                                            s.onload = function(){
+                                                callback();
+                                            };
+                                        }
+                                    }
+                                    s.src = src;
+                                    target.appendChild(s);        
+                                }
+                                var elFrame = document.getElementById("siyavulaQContainer");
+                                var context = elFrame.contentDocument;
+                                var frameHead = context.getElementsByTagName("head").item(0);
+                                insertScript(context, frameHead, "https://www.siyavula.com/static/themes/emas/node_modules/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"); // This is necessary for load script into iframe
+                            
                                 let timest = Math.floor(Date.now() / 1000);
                                 html = html.replaceAll('sv-button toggle-solution', `sv-button toggle-solution btnsolution-${targetid}-${timest}`);
                                 $("#siyavulaQContainer").contents().find(`#${targetid}.question-content`).html(html);    
