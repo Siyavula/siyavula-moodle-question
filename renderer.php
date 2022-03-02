@@ -129,6 +129,7 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $user_token = siyavula_get_external_user_token($siyavula_config, $client_ip, $token);
         
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' => $trueattributes, 'chkfalse' => $falseattributes]);
+        
         // Only need templateId and all_ids
         $iframeUrl = new moodle_url('/question/type/siyavulaqt/embedquestion.php', ['questionid' => $standalone_strip, 'random_seed' => $randomseed]);
 
@@ -143,9 +144,11 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $baseurl = $siyavula_config->url_base;
         $currenturl = $PAGE->URL;
         
+        $htmlquestion = get_html_question_standalone($questionapi->response->question_html,$activityid,$responseid);
+        
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl,$token,$external_token,$activityid,$responseid,$idsq,$currenturl->__toString(),$next_id,$standalone_strip]);
 
-        $result .= html_writer::tag('iframe', array(
+        $result .= html_writer::tag('iframe',$htmlquestion, array(
                                 'id' => 'siyavulaQContainer',
                                 'src'=>  $iframeUrl,
                                 'style' => 'width: 100%; padding: 20px; background-color: white; border: none;'));
