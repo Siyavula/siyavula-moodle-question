@@ -133,6 +133,7 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         // Only need templateId and all_ids
         $iframeUrl = new moodle_url('/question/type/siyavulaqt/embedquestion.php', ['questionid' => $standalone_strip, 'random_seed' => $randomseed]);
 
+        $siyavula_activity_id = $standalone_strip;
         $questionapi = get_activity_standalone($siyavula_activity_id,$token, $user_token->token,$siyavula_config->url_base,$random_seed);
 
         $activityid  = $questionapi->activity->id;
@@ -148,11 +149,7 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl,$token,$external_token,$activityid,$responseid,$idsq,$currenturl->__toString(),$next_id,$standalone_strip]);
 
-        $result .= html_writer::tag('iframe',$htmlquestion, array(
-                                'id' => 'siyavulaQContainer',
-                                'src'=>  $iframeUrl,
-                                'style' => 'width: 100%; padding: 20px; background-color: white; border: none;'));
-
+        $result .= $htmlquestion;
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
         $result .= html_writer::tag('div', get_string('selectone', 'qtype_siyavulaqt'),
                 array('class' => 'prompt'));
