@@ -25,9 +25,10 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
             "sv-button sv-button--primary check-answer-button"
           ) {
             e.preventDefault();
-            var formData = $("#siyavulaQContainer")
-              .contents()
-              .find(`div#${targetid} form[name="questions"]`)
+
+            // Get all Siyavula inputs that have not been marked "readonly"
+            var formData = $(".response-query-input")
+              .not('[name*="|readonly"]')
               .serialize();
 
             var submitresponse = Ajax.call([
@@ -43,6 +44,7 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
                 },
               },
             ]);
+
             submitresponse[0]
               .done(function (response) {
                 var dataresponse = JSON.parse(response.response);
@@ -53,23 +55,13 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
                   "sv-button toggle-solution",
                   `sv-button toggle-solution btnsolution-${targetid}-${timest}`
                 );
-                $("#siyavulaQContainer")
-                  .contents()
-                  .find(`#${targetid}.question-content`)
-                  .html(html);
-                $("#siyavulaQContainer")
-                  .contents()
-                  .find(`div#${targetid} .toggle-solution-checkbox`)
-                  .css("visibility", "hidden");
+                $(".question-content").html(html);
+                $(".toggle-solution-checkbox").css("visibility", "hidden");
 
-                const theId = targetid;
-                const escapeID = CSS.escape(theId);
-
-                const labelSolution = $("#siyavulaQContainer")
-                  .contents()
-                  .find(`#${escapeID}.question-content #show-hide-solution`)[0];
+                const labelSolution = $(
+                  ".question-content #show-hide-solution"
+                )[0];
                 const key = 0; // Because in quiz is only one response solution
-                console.log(labelSolution);
                 labelSolution.innerHTML = "";
 
                 const newShowSpan = document.createElement("input");
@@ -86,10 +78,8 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
 
                 var is_correct = true;
                 const rsElement = labelSolution.nextSibling; // Response information
-                console.log(rsElement, labelSolution);
                 const identificador = `${rsElement.id}-${key}`;
                 rsElement.classList.add(identificador);
-                console.log(rsElement);
                 if (rsElement.id == "correct-solution") {
                   is_correct = true;
                 } else {
@@ -101,13 +91,12 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
                 } else {
                   newHideSpan.style.display = "none";
                 }
+
                 labelSolution.append(newShowSpan);
                 labelSolution.append(newHideSpan);
 
-                $("#siyavulaQContainer")
-                  .contents()
-                  .find(`div#${targetid} #nav-buttons`)
-                  .css("display", "none");
+                // Hide nav buttons (Try exercise again/Go to next exercise)
+                $("#nav-buttons").css("display", "none");
 
                 const spanShow = labelSolution.querySelector(`#show${key}`);
                 const spanHide = labelSolution.querySelector(`#hide${key}`);
@@ -121,10 +110,8 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
                     spanHide.style.display = "none";
                   }
 
-                  $("#siyavulaQContainer")
-                    .contents()
-                    .find(`.${identificador}`)
-                    .slideToggle();
+                  // Animate show/hide solution
+                  $(`.${identificador}`).slideToggle();
                 };
                 spanShow.addEventListener("click", functionClickSolution);
                 spanHide.addEventListener("click", functionClickSolution);
