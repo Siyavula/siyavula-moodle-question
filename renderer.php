@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/filter/siyavula/lib.php');
-        
+
 /**
  * Generates the output for true-false questions.
  *
@@ -38,12 +38,12 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
     public function formulation_and_controls(question_attempt $qa,
             question_display_options $options) {
         global $PAGE;
-                
+
         $nextqt = optional_param('nextqr', '', PARAM_INT);
 
         $question = $qa->get_question();
         $response = $qa->get_last_qt_var('answer', '');
-        
+
         $inputname = $qa->get_qt_field_name('answer');
         $trueattributes = array(
             'type' => 'radio',
@@ -100,36 +100,36 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                 array('for' => $falseattributes['id'], 'class' => 'ml-1'));
 
         $result = '';
-        
+
         // Get the standalone.mustache
         $standalone_page = $question->format_questiontext($qa);
-        
+
         //Strip all tags of the mustache, only left the text inside <script>
         $standalone_strip = strip_tags($standalone_page);
-        
+
         $standalone_strip = str_replace("sy-",' ',$standalone_strip);
-        
-        // If we detext a "," then we will use [0] for the question ID, and [1] for the seed 
+
+        // If we detext a "," then we will use [0] for the question ID, and [1] for the seed
         $standalone_strip = explode('|', $standalone_strip);
-        
+
         if(isset($standalone_strip[1])){
             $seed = (int) $standalone_strip[1];
             $standalone_strip = $standalone_strip[0];
         }else{
             $standalone_strip = $standalone_strip[0];
         }
-        
+
         $randomseed = (isset($seed) ? $seed : rand(1, 99999));
 
         $client_ip       = $_SERVER['REMOTE_ADDR'];
         $siyavula_config = get_config('filter_siyavula');
 
         $token = siyavula_get_user_token($siyavula_config, $client_ip);
-       
+
         $user_token = siyavula_get_external_user_token($siyavula_config, $client_ip, $token);
-        
+
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' => $trueattributes, 'chkfalse' => $falseattributes]);
-        
+
         // Only need templateId and all_ids
         $iframeUrl = new moodle_url('/question/type/siyavulaqt/embedquestion.php', ['questionid' => $standalone_strip, 'random_seed' => $randomseed]);
 
@@ -143,16 +143,16 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $external_token = $user_token->token;
         $baseurl = $siyavula_config->url_base;
         $currenturl = $PAGE->URL;
-        
+
         $htmlquestion = get_html_question_standalone($questionapi->response->question_html,$activityid,$responseid);
-        
+
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl,$token,$external_token,$activityid,$responseid,$idsq,$currenturl->__toString(),$next_id,$standalone_strip]);
 
         $result .= html_writer::tag('iframe',$htmlquestion, array(
                                 'id' => 'siyavulaQContainer',
                                 'src'=>  $iframeUrl,
                                 'style' => 'width: 100%; padding: 20px; background-color: white; border: none;'));
-        
+
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
         $result .= html_writer::tag('div', get_string('selectone', 'qtype_siyavulaqt'),
                 array('class' => 'prompt'));
@@ -171,19 +171,19 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                     $question->get_validation_error($responsearray),
                     array('class' => 'validationerror'));
         }
-        
+
         $url = $_SERVER["REQUEST_URI"];
         $findme  = '/mod/quiz/review.php';
         $pos = strpos($url, $findme);
 
         if($pos === false){
-           return $result; 
+           return $result;
         }
-        
+
     }
 
     public function specific_feedback(question_attempt $qa) {
-        
+
         $question = $qa->get_question();
         $response = $qa->get_last_qt_var('answer', '');
 
