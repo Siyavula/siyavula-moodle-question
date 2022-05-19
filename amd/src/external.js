@@ -21,44 +21,50 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
 
         $(document).on("click", ".check-answer-button", function (e) {
           e.preventDefault();
-
-          // Get all Siyavula inputs that have not been marked "readonly"
-          var formData = $(".response-query-input")
-            .not('[name*="|readonly"]')
-            .serialize();
-
-          var submitresponse = Ajax.call([
-            {
-              methodname: "filter_siyavula_submit_answers_siyavula",
-              args: {
-                baseurl: baseUrl,
-                token: token,
-                external_token: externalToken,
-                activityid: activityId,
-                responseid: responseId,
-                data: formData,
-              },
-            },
-          ]);
-
-          submitresponse[0]
-            .done(function (response) {
-              var responseData = JSON.parse(response.response);
-              var html = responseData.response.question_html;
-              // Replace question HTML with marked HTML returned from the API
-              $(".question-content").html(html);
-
-              // Hide nav buttons (Try exercise again/Go to next exercise)
-              $("#nav-buttons").css("display", "none");
-
-              // Typeset new HTML content
-              MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            })
-            .fail(function (ex) {
-              console.log(ex);
-            });
+          submitResponse();
         });
       });
+
+      function submitResponse() {
+        // Get all Siyavula inputs that have not been marked "readonly"
+        var formData = $(".response-query-input")
+          .not('[name*="|readonly"]')
+          .serialize();
+
+        var promises = Ajax.call([
+          {
+            methodname: "filter_siyavula_submit_answers_siyavula",
+            args: {
+              baseurl: baseUrl,
+              token: token,
+              external_token: externalToken,
+              activityid: activityId,
+              responseid: responseId,
+              data: formData,
+            },
+          },
+        ]);
+
+        promises[0]
+          .done(function (response) {
+            var responseData = JSON.parse(response.response);
+            updateHtml(responseData.response.question_html);
+          })
+          .fail(function (e) {
+            console.log(e);
+          });
+      }
+
+      function updateHtml(html) {
+        // Replace question HTML with marked HTML returned from the API
+        $(".question-content").html(html);
+
+        // Hide nav buttons (Try exercise again/Go to next exercise)
+        $("#nav-buttons").css("display", "none");
+
+        // Typeset new HTML content
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+      }
 
       function showHideSolution(button) {
         const $button = jQuery(button);
