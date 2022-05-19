@@ -55,21 +55,6 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
                 // Replace question HTML with marked HTML returned from the API
                 $(".question-content").html(html);
 
-                const labelSolution = $(
-                  ".question-content #show-hide-solution"
-                )[0];
-                const key = 0; // Because in quiz is only one response solution
-
-                var is_correct = true;
-                const rsElement = labelSolution.nextSibling; // Response information
-                const identificador = `${rsElement.id}-${key}`;
-                rsElement.classList.add(identificador);
-                if (rsElement.id == "correct-solution") {
-                  is_correct = true;
-                } else {
-                  is_correct = false;
-                }
-
                 // Hide nav buttons (Try exercise again/Go to next exercise)
                 $("#nav-buttons").css("display", "none");
 
