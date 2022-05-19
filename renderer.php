@@ -109,7 +109,7 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
         $standalone_strip = str_replace("sy-",' ',$standalone_strip);
 
-        // If we detext a "," then we will use [0] for the question ID, and [1] for the seed
+        // If we detexc a "," then we will use [0] for the question ID, and [1] for the seed
         $standalone_strip = explode('|', $standalone_strip);
 
         if(isset($standalone_strip[1])){
@@ -129,9 +129,6 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $user_token = siyavula_get_external_user_token($siyavula_config, $client_ip, $token);
 
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' => $trueattributes, 'chkfalse' => $falseattributes]);
-
-        // Only need templateId and all_ids
-        $iframeUrl = new moodle_url('/question/type/siyavulaqt/embedquestion.php', ['questionid' => $standalone_strip, 'random_seed' => $randomseed]);
 
         $siyavula_activity_id = $standalone_strip;
         $questionapi = get_activity_standalone($siyavula_activity_id,$token, $user_token->token,$siyavula_config->url_base,$random_seed);
