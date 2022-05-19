@@ -1,15 +1,15 @@
 define(["jquery", "core/ajax"], function ($, Ajax) {
   return {
     init: function (
-      baseurl,
+      baseUrl,
       token,
-      external_token,
-      activityid,
-      responseid,
-      idsq,
-      currenturl,
-      next_id,
-      $siyavula_activity_id
+      externalToken,
+      activityId,
+      responseId,
+      idSq,
+      currentUrl,
+      nextId,
+      siyavulaActivityId
     ) {
       $(document).ready(function () {
         // Expose showHideSolution to global window object
@@ -38,9 +38,9 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
               {
                 methodname: "filter_siyavula_submit_answers_siyavula",
                 args: {
-                  baseurl: baseurl,
+                  baseurl: baseUrl,
                   token: token,
-                  external_token: external_token,
+                  external_token: externalToken,
                   activityid: activityId,
                   responseid: responseId,
                   data: formData,
