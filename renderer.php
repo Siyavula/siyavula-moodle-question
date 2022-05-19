@@ -190,13 +190,14 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         }
     }
 
-    public function correct_response(question_attempt $qa) {
-        $question = $qa->get_question();
+    // LC: Feedback has been removed, if required again, uncomment this.
+    // public function correct_response(question_attempt $qa) {
+    //     $question = $qa->get_question();
 
-        if ($question->rightanswer) {
-            return get_string('correctanswertrue', 'qtype_siyavulaqt');
-        } else {
-            return get_string('correctanswerfalse', 'qtype_siyavulaqt');
-        }
-    }
+    //     if ($question->rightanswer) {
+    //         return get_string('correctanswertrue', 'qtype_siyavulaqt');
+    //     } else {
+    //         return get_string('correctanswerfalse', 'qtype_siyavulaqt');
+    //     }
+    // }
 }
