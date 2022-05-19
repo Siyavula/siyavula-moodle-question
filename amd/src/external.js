@@ -47,16 +47,10 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
 
             submitresponse[0]
               .done(function (response) {
-                var dataresponse = JSON.parse(response.response);
-                var html = dataresponse.response.question_html;
-
-                let timest = Math.floor(Date.now() / 1000);
-                html = html.replaceAll(
-                  "sv-button toggle-solution",
-                  `sv-button toggle-solution btnsolution-${targetid}-${timest}`
-                );
+                var responseData = JSON.parse(response.response);
+                var html = responseData.response.question_html;
+                // Replace question HTML with marked HTML
                 $(".question-content").html(html);
-                $(".toggle-solution-checkbox").css("visibility", "hidden");
 
                 const labelSolution = $(
                   ".question-content #show-hide-solution"
