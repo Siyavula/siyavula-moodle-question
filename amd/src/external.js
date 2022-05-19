@@ -20,8 +20,8 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
         Y.fire(M.core.event.FILTER_CONTENT_UPDATED, { nodes: nodes });
 
         $(".question-content").on("click", function (e) {
-          const response = e.currentTarget.dataset.response;
-          const targetid = e.currentTarget.id;
+          const responseId = e.currentTarget.dataset.response;
+          const activityId = e.currentTarget.id;
 
           if (
             e.target.className ===
@@ -41,8 +41,8 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
                   baseurl: baseurl,
                   token: token,
                   external_token: external_token,
-                  activityid: targetid,
-                  responseid: response,
+                  activityid: activityId,
+                  responseid: responseId,
                   data: formData,
                 },
               },
