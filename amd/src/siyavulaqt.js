@@ -22,5 +22,11 @@ export const init = (chktrue, chkfalse) => {
     ) {
       $('[for="' + chktrue.id + '"]').click();
     }
+    if (
+      $(".question-content").contents().find(".feedback--partly-correct")
+        .length > 0
+    ) {
+      $('[for="' + chktrue.id + '"]').click();
+    }
   }, 1000);
 };
