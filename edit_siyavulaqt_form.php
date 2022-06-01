@@ -27,16 +27,17 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-require_once($CFG->dirroot.'/question/type/edit_question_form.php');
+require_once $CFG->dirroot.'/question/type/edit_question_form.php';
 
 
 /**
  * True-false question editing form definition.
  *
- * @copyright  2007 Jamie Pratt
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2007 Jamie Pratt
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_siyavulaqt_edit_form extends question_edit_form {
+
     /**
      * Add question-type specific form fields.
      *
@@ -51,22 +52,30 @@ class qtype_siyavulaqt_edit_form extends question_edit_form {
         $mform->addElement('hidden', 'correctanswer', 1);
         $mform->setType('penalty', PARAM_INT);
 
-        $mform->addElement('editor', 'feedbacktrue',
-                get_string('feedbacktrue', 'qtype_siyavulaqt'), array('rows' => 10), $this->editoroptions);
+        $mform->addElement(
+            'editor', 'feedbacktrue',
+            get_string('feedbacktrue', 'qtype_siyavulaqt'), array('rows' => 10), $this->editoroptions
+        );
         $mform->setType('feedbacktrue', PARAM_RAW);
 
-        $mform->addElement('editor', 'feedbackfalse',
-                get_string('feedbackfalse', 'qtype_siyavulaqt'), array('rows' => 10), $this->editoroptions);
+        $mform->addElement(
+            'editor', 'feedbackfalse',
+            get_string('feedbackfalse', 'qtype_siyavulaqt'), array('rows' => 10), $this->editoroptions
+        );
         $mform->setType('feedbackfalse', PARAM_RAW);
 
-        $mform->addElement('header', 'multitriesheader',
-                get_string('settingsformultipletries', 'question'));
+        $mform->addElement(
+            'header', 'multitriesheader',
+            get_string('settingsformultipletries', 'question')
+        );
 
         $mform->addElement('hidden', 'penalty', 1);
         $mform->setType('penalty', PARAM_FLOAT);
 
-        $mform->addElement('static', 'penaltymessage',
-                get_string('penaltyforeachincorrecttry', 'question'), 1);
+        $mform->addElement(
+            'static', 'penaltymessage',
+            get_string('penaltyforeachincorrecttry', 'question'), 1
+        );
         $mform->addHelpButton('penaltymessage', 'penaltyforeachincorrecttry', 'question');
     }
 

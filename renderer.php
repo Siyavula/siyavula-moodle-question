@@ -102,49 +102,49 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $result = '';
 
         // Get the standalone.mustache
-        $standalone_page = $question->format_questiontext($qa);
+        $standalonepage = $question->format_questiontext($qa);
 
-        //Strip all tags of the mustache, only left the text inside <script>
-        $standalone_strip = strip_tags($standalone_page);
+        // Strip all tags of the mustache, only left the text inside <script>
+        $standalonestrip = strip_tags($standalonepage);
 
-        $standalone_strip = str_replace("sy-",' ',$standalone_strip);
+        $standalonestrip = str_replace("sy-", ' ', $standalonestrip);
 
         // If we detexc a "," then we will use [0] for the question ID, and [1] for the seed
-        $standalone_strip = explode('|', $standalone_strip);
+        $standalonestrip = explode('|', $standalonestrip);
 
-        if(isset($standalone_strip[1])){
-            $seed = (int) $standalone_strip[1];
-            $standalone_strip = $standalone_strip[0];
+        if(isset($standalonestrip[1])){
+            $seed = (int) $standalonestrip[1];
+            $standalonestrip = $standalonestrip[0];
         }else{
-            $standalone_strip = $standalone_strip[0];
+            $standalonestrip = $standalonestrip[0];
         }
 
         $randomseed = (isset($seed) ? $seed : rand(1, 99999));
 
-        $client_ip       = $_SERVER['REMOTE_ADDR'];
-        $siyavula_config = get_config('filter_siyavula');
+        $clientip       = $_SERVER['REMOTE_ADDR'];
+        $siyavulaconfig = get_config('filter_siyavula');
 
-        $token = siyavula_get_user_token($siyavula_config, $client_ip);
+        $token = siyavula_get_user_token($siyavulaconfig, $clientip);
 
-        $user_token = siyavula_get_external_user_token($siyavula_config, $client_ip, $token);
+        $usertoken = siyavula_get_external_user_token($siyavulaconfig, $clientip, $token);
 
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' => $trueattributes, 'chkfalse' => $falseattributes]);
 
-        $siyavula_activity_id = $standalone_strip;
-        $questionapi = get_activity_standalone($siyavula_activity_id,$token, $user_token->token,$siyavula_config->url_base,$random_seed);
+        $siyavulaactivityid = $standalonestrip;
+        $questionapi = get_activity_standalone($siyavulaactivityid, $token, $usertoken->token, $siyavulaconfig->url_base, $randomseed);
 
         $activityid  = $questionapi->activity->id;
         $responseid  = $questionapi->response->id;
 
         $idsq = "";
-        $next_id = false;
-        $external_token = $user_token->token;
-        $baseurl = $siyavula_config->url_base;
+        $nextid = false;
+        $externaltoken = $usertoken->token;
+        $baseurl = $siyavulaconfig->url_base;
         $currenturl = $PAGE->URL;
 
-        $htmlquestion = get_html_question_standalone($questionapi->response->question_html,$activityid,$responseid);
+        $htmlquestion = get_html_question_standalone($questionapi->response->question_html, $activityid, $responseid);
 
-        $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl,$token,$external_token,$activityid,$responseid,$idsq,$currenturl->__toString(),$next_id,$standalone_strip]);
+        $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl, $token, $externaltoken, $activityid, $responseid, $idsq, $currenturl->__toString(), $nextid, $standalonestrip]);
 
         $result .= $htmlquestion;
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
@@ -171,7 +171,7 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $pos = strpos($url, $findme);
 
         if($pos === false){
-           return $result;
+            return $result;
         }
 
     }
@@ -192,12 +192,12 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
     // LC: Feedback has been removed, if required again, uncomment this.
     // public function correct_response(question_attempt $qa) {
-    //     $question = $qa->get_question();
+    // $question = $qa->get_question();
 
-    //     if ($question->rightanswer) {
-    //         return get_string('correctanswertrue', 'qtype_siyavulaqt');
-    //     } else {
-    //         return get_string('correctanswerfalse', 'qtype_siyavulaqt');
-    //     }
+    // if ($question->rightanswer) {
+    // return get_string('correctanswertrue', 'qtype_siyavulaqt');
+    // } else {
+    // return get_string('correctanswerfalse', 'qtype_siyavulaqt');
+    // }
     // }
 }

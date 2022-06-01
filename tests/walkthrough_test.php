@@ -37,7 +37,7 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_siyavulaqt_walkthrough_test extends qbehaviour_walkthrough_test_base {
+class walkthrough_test extends qbehaviour_walkthrough_test_base {
     public function test_false_right_does_not_show_feedback_when_not_answered() {
 
         // Create a true-false question with correct answer false.
