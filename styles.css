@@ -1,3 +1,7 @@
+body, html{
+    width: auto;
+}
+
 .que.siyavulaqt .answer div.r0,
 .que.siyavulaqt .answer div.r1 {
     padding: 0.3em;
