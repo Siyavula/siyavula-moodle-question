@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-require_once $CFG->dirroot.'/question/type/edit_question_form.php';
+require_once($CFG->dirroot.'/question/type/edit_question_form.php');
 
 
 /**
@@ -44,11 +44,6 @@ class qtype_siyavulaqt_edit_form extends question_edit_form {
      * @param object $mform the form being built.
      */
     protected function definition_inner($mform) {
-        /*$mform->addElement('select', 'correctanswer',
-                get_string('correctanswer', 'qtype_siyavulaqt'), array(
-                0 => get_string('false', 'qtype_siyavulaqt'),
-                1 => get_string('true', 'qtype_siyavulaqt')));*/
-
         $mform->addElement('hidden', 'correctanswer', 1);
         $mform->setType('penalty', PARAM_INT);
 
@@ -92,13 +87,13 @@ class qtype_siyavulaqt_edit_form extends question_edit_form {
             $question->feedbacktrue = array();
             $question->feedbacktrue['format'] = $trueanswer->feedbackformat;
             $question->feedbacktrue['text'] = file_prepare_draft_area(
-                $draftid,             // Draftid
-                $this->context->id,   // context
-                'question',           // component
-                'answerfeedback',     // filarea
-                !empty($answerid) ? (int) $answerid : null, // itemid
-                $this->fileoptions,   // options
-                $trueanswer->feedback // text.
+                $draftid,             // Draftid.
+                $this->context->id,   // Context.
+                'question',           // Component.
+                'answerfeedback',     // Filarea.
+                !empty($answerid) ? (int) $answerid : null, // Itemid.
+                $this->fileoptions,   // Options.
+                $trueanswer->feedback // Text.
             );
             $question->feedbacktrue['itemid'] = $draftid;
         }
@@ -112,13 +107,13 @@ class qtype_siyavulaqt_edit_form extends question_edit_form {
             $question->feedbackfalse = array();
             $question->feedbackfalse['format'] = $falseanswer->feedbackformat;
             $question->feedbackfalse['text'] = file_prepare_draft_area(
-                $draftid,              // Draftid
-                $this->context->id,    // context
-                'question',            // component
-                'answerfeedback',      // filarea
-                !empty($answerid) ? (int) $answerid : null, // itemid
-                $this->fileoptions,    // options
-                $falseanswer->feedback // text.
+                $draftid,              // Draftid.
+                $this->context->id,    // Context.
+                'question',            // Component.
+                'answerfeedback',      // Filarea.
+                !empty($answerid) ? (int) $answerid : null, // Itemid.
+                $this->fileoptions,    // Options.
+                $falseanswer->feedback // Text.
             );
             $question->feedbackfalse['itemid'] = $draftid;
         }

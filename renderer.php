@@ -101,21 +101,21 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
         $result = '';
 
-        // Get the standalone.mustache
+        // Get the standalone.mustache.
         $standalonepage = $question->format_questiontext($qa);
 
-        // Strip all tags of the mustache, only left the text inside <script>
+        // Strip all tags of the mustache, only left the text inside <script>.
         $standalonestrip = strip_tags($standalonepage);
 
         $standalonestrip = str_replace("sy-", ' ', $standalonestrip);
 
-        // If we detexc a "," then we will use [0] for the question ID, and [1] for the seed
+        // If we detect a "," then we will use [0] for the question ID, and [1] for the seed.
         $standalonestrip = explode('|', $standalonestrip);
 
-        if(isset($standalonestrip[1])){
+        if (isset($standalonestrip[1])) {
             $seed = (int) $standalonestrip[1];
             $standalonestrip = $standalonestrip[0];
-        }else{
+        } else {
             $standalonestrip = $standalonestrip[0];
         }
 
@@ -128,10 +128,12 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
         $usertoken = siyavula_get_external_user_token($siyavulaconfig, $clientip, $token);
 
-        $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' => $trueattributes, 'chkfalse' => $falseattributes]);
+        $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' =>
+            $trueattributes, 'chkfalse' => $falseattributes]);
 
         $siyavulaactivityid = $standalonestrip;
-        $questionapi = get_activity_standalone($siyavulaactivityid, $token, $usertoken->token, $siyavulaconfig->url_base, $randomseed);
+        $questionapi = get_activity_standalone($siyavulaactivityid, $token, $usertoken->token,
+            $siyavulaconfig->url_base, $randomseed);
 
         $activityid  = $questionapi->activity->id;
         $responseid  = $questionapi->response->id;
@@ -144,7 +146,9 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
         $htmlquestion = get_html_question_standalone($questionapi->response->question_html, $activityid, $responseid);
 
-        $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl, $token, $externaltoken, $activityid, $responseid, $idsq, $currenturl->__toString(), $nextid, $standalonestrip]);
+        $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl, $token,
+            $externaltoken, $activityid, $responseid, $idsq, $currenturl->__toString(), $nextid,
+            $standalonestrip]);
 
         $result .= $htmlquestion;
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
@@ -170,7 +174,7 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $findme  = '/mod/quiz/review.php';
         $pos = strpos($url, $findme);
 
-        if($pos === false){
+        if ($pos === false) {
             return $result;
         }
 
