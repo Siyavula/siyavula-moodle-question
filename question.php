@@ -31,10 +31,11 @@ require_once($CFG->dirroot . '/question/type/questionbase.php');
 /**
  * Represents a true-false question.
  *
- * @copyright  2009 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2009 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_siyavulaqt_question extends question_graded_automatically {
+
     public $rightanswer;
     public $truefeedback;
     public $falsefeedback;
@@ -75,11 +76,15 @@ class qtype_siyavulaqt_question extends question_graded_automatically {
         }
         list($fraction) = $this->grade_response($response);
         if ($response['answer']) {
-            return array($this->id => new question_classified_response(1,
-                    get_string('true', 'qtype_siyavulaqt'), $fraction));
+            return array($this->id => new question_classified_response(
+                1,
+                get_string('true', 'qtype_siyavulaqt'), $fraction
+            ));
         } else {
-            return array($this->id => new question_classified_response(0,
-                    get_string('false', 'qtype_siyavulaqt'), $fraction));
+            return array($this->id => new question_classified_response(
+                0,
+                get_string('false', 'qtype_siyavulaqt'), $fraction
+            ));
         }
     }
 
@@ -96,7 +101,8 @@ class qtype_siyavulaqt_question extends question_graded_automatically {
 
     public function is_same_response(array $prevresponse, array $newresponse) {
         return question_utils::arrays_same_at_key_missing_is_blank(
-                $prevresponse, $newresponse, 'answer');
+            $prevresponse, $newresponse, 'answer'
+        );
     }
 
     public function grade_response(array $response) {
@@ -119,8 +125,10 @@ class qtype_siyavulaqt_question extends question_graded_automatically {
                     ($answerid == $this->falseanswerid && $response !== ''));
 
         } else {
-            return parent::check_file_access($qa, $options, $component, $filearea,
-                    $args, $forcedownload);
+            return parent::check_file_access(
+                $qa, $options, $component, $filearea,
+                $args, $forcedownload
+            );
         }
     }
 }

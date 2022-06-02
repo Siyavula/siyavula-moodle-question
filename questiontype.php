@@ -32,18 +32,21 @@ require_once($CFG->libdir . '/questionlib.php');
 /**
  * The true-false question type class.
  *
- * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_siyavulaqt extends question_type {
+
     public function save_question_options($question) {
         global $DB;
         $result = new stdClass();
         $context = $question->context;
 
         // Fetch old answer ids so that we can reuse them.
-        $oldanswers = $DB->get_records('question_answers',
-                array('question' => $question->id), 'id ASC');
+        $oldanswers = $DB->get_records(
+            'question_answers',
+            array('question' => $question->id), 'id ASC'
+        );
 
         // Save the true answer - update an existing answer if possible.
         $answer = array_shift($oldanswers);
@@ -57,8 +60,10 @@ class qtype_siyavulaqt extends question_type {
 
         $answer->answer   = get_string('true', 'qtype_siyavulaqt');
         $answer->fraction = $question->correctanswer;
-        $answer->feedback = $this->import_or_save_files($question->feedbacktrue,
-                $context, 'question', 'answerfeedback', $answer->id);
+        $answer->feedback = $this->import_or_save_files(
+            $question->feedbacktrue,
+            $context, 'question', 'answerfeedback', $answer->id
+        );
         $answer->feedbackformat = $question->feedbacktrue['format'];
         $DB->update_record('question_answers', $answer);
         $trueid = $answer->id;
@@ -75,8 +80,10 @@ class qtype_siyavulaqt extends question_type {
 
         $answer->answer   = get_string('false', 'qtype_siyavulaqt');
         $answer->fraction = 1 - (int)$question->correctanswer;
-        $answer->feedback = $this->import_or_save_files($question->feedbackfalse,
-                $context, 'question', 'answerfeedback', $answer->id);
+        $answer->feedback = $this->import_or_save_files(
+            $question->feedbackfalse,
+            $context, 'question', 'answerfeedback', $answer->id
+        );
         $answer->feedbackformat = $question->feedbackfalse['format'];
         $DB->update_record('question_answers', $answer);
         $falseid = $answer->id;
@@ -115,16 +122,24 @@ class qtype_siyavulaqt extends question_type {
         global $DB, $OUTPUT;
         // Get additional information from database
         // and attach it to the question object.
-        if (!$question->options = $DB->get_record('question_siyavulaqt',
-                array('question' => $question->id))) {
+        if (!$question->options = $DB->get_record(
+            'question_siyavulaqt',
+            array('question' => $question->id)
+        )
+        ) {
             echo $OUTPUT->notification('Error: Missing question options!');
             return false;
         }
         // Load the answers.
-        if (!$question->options->answers = $DB->get_records('question_answers',
-                array('question' =>  $question->id), 'id ASC')) {
-            echo $OUTPUT->notification('Error: Missing question answers for siyavulaqt question ' .
-                    $question->id . '!');
+        if (!$question->options->answers = $DB->get_records(
+            'question_answers',
+            array('question' => $question->id), 'id ASC'
+        )
+        ) {
+            echo $OUTPUT->notification(
+                'Error: Missing question answers for siyavulaqt question ' .
+                $question->id . '!'
+            );
             return false;
         }
 
@@ -139,13 +154,13 @@ class qtype_siyavulaqt extends question_type {
         } else {
             $question->rightanswer = false;
         }
-        $question->truefeedback =  $answers[$questiondata->options->trueanswer]->feedback;
+        $question->truefeedback = $answers[$questiondata->options->trueanswer]->feedback;
         $question->falsefeedback = $answers[$questiondata->options->falseanswer]->feedback;
         $question->truefeedbackformat =
                 $answers[$questiondata->options->trueanswer]->feedbackformat;
         $question->falsefeedbackformat =
                 $answers[$questiondata->options->falseanswer]->feedbackformat;
-        $question->trueanswerid =  $questiondata->options->trueanswer;
+        $question->trueanswerid = $questiondata->options->trueanswer;
         $question->falseanswerid = $questiondata->options->falseanswer;
     }
 
@@ -173,12 +188,16 @@ class qtype_siyavulaqt extends question_type {
     public function get_possible_responses($questiondata) {
         return array(
             $questiondata->id => array(
-                0 => new question_possible_response(get_string('false', 'qtype_siyavulaqt'),
-                        $questiondata->options->answers[
-                        $questiondata->options->falseanswer]->fraction),
-                1 => new question_possible_response(get_string('true', 'qtype_siyavulaqt'),
-                        $questiondata->options->answers[
-                        $questiondata->options->trueanswer]->fraction),
+                0 => new question_possible_response(
+                    get_string('false', 'qtype_siyavulaqt'),
+                    $questiondata->options->answers[
+                    $questiondata->options->falseanswer]->fraction
+                ),
+                1 => new question_possible_response(
+                    get_string('true', 'qtype_siyavulaqt'),
+                    $questiondata->options->answers[
+                    $questiondata->options->trueanswer]->fraction
+                ),
                 null => question_possible_response::no_response()
             )
         );

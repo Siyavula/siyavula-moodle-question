@@ -38,7 +38,7 @@ require_once($CFG->dirroot . '/question/type/siyavulaqt/edit_siyavulaqt_form.php
  * @copyright  2007 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_siyavulaqt_test extends advanced_testcase {
+class questiontype_test extends advanced_testcase {
     protected $qtype;
 
     protected function setUp() {

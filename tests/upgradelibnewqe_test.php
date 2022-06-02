@@ -37,7 +37,7 @@ require_once($CFG->dirroot . '/question/engine/upgrade/tests/helper.php');
  * @copyright  2009 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_siyavulaqt_attempt_upgrader_test extends question_attempt_upgrader_test_base {
+class upgradelibnewqe_test extends question_attempt_upgrader_test_base {
 
     public function test_siyavulaqt_deferredfeedback_history620() {
         $quiz = (object) array(
