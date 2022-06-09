@@ -142,7 +142,6 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $activityrenderable->randomseed = $randomseed;
         $result .= $renderer->render_standalone_activity($activityrenderable);
 
-        //$result .= html_writer::start_tag('div', array('class' => 'ablock'));
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
         $result .= html_writer::tag('div', get_string('selectone', 'qtype_siyavulaqt'),
                 array('class' => 'prompt'));
