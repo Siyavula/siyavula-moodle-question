@@ -1,38 +1,21 @@
-define("qtype_siyavulaqt/siyavulaqt", ["exports"], function (a) {
-  "use strict";
-  Object.defineProperty(a, "__esModule", { value: !0 });
-  a.init = void 0;
-  a.init = function init(chktrue, chkfalse) {
-    window.setInterval(function () {
-      var height = $(".question-content")
-        .contents()
-        .find(".sv-region-main")
-        .height();
+define(["jquery", "core/ajax"], function ($, Ajax) {
+  return {
+    init: function (chktrue, chkfalse) {
+      window.setInterval(function () {
+        // TODO: Move to CSS
+        $(".sv-form__actions").remove();
 
-      var qtvalue = $(".question-content").contents().find(".sv-form__actions");
-      if (qtvalue.length) {
-        $(".question-content").contents().find(".sv-form__actions").remove();
-      }
+        // const $questionContent = $(".question-content");
+        const $incorrect = $(".feedback--incorrect").length;
+        const $correct = $(".feedback--correct").length;
+        const $partiallyCorrect = $(".feedback--partly-correct").length;
 
-      $(".question-content").height(height + 40);
-
-      if (
-        $(".question-content").contents().find(".feedback--incorrect").length >
-        0
-      ) {
-        $("[id='" + chkfalse.id + "']").prop("checked", "checked");
-      }
-      if (
-        $(".question-content").contents().find(".feedback--correct").length > 0
-      ) {
-        $("[id='" + chktrue.id + "']").prop("checked", "checked");
-      }
-      if (
-        $(".question-content").contents().find(".feedback--partly-correct")
-          .length > 0
-      ) {
-        $("[id='" + chktrue.id + "']").prop("checked", "checked");
-      }
-    }, 1000);
+        if ($incorrect) {
+          $("[id='" + chkfalse.id + "']").prop("checked", "checked");
+        } else if ($correct || $partiallyCorrect) {
+          $("[id='" + chktrue.id + "']").prop("checked", "checked");
+        }
+      }, 1000);
+    },
   };
 });
