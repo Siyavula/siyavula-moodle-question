@@ -69,11 +69,9 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $falsechecked = false;
         $responsearray = array();
         if ($response) {
-            // $trueattributes['checked'] = 'checked';
             $truechecked = true;
             $responsearray = array('answer' => 1);
         } else if ($response !== '') {
-            // $falseattributes['checked'] = 'checked';
             $falsechecked = true;
             $responsearray = array('answer' => 1);
         }
@@ -134,29 +132,6 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' =>
             $trueattributes, 'chkfalse' => $falseattributes]);
 
-        // $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' =>
-        //     $trueattributes, 'chkfalse' => $falseattributes]);
-
-        // $siyavulaactivityid = $standalonestrip;
-        // $questionapi = get_activity_standalone($siyavulaactivityid, $token, $usertoken->token,
-        //     $siyavulaconfig->url_base, $randomseed);
-
-        // $activityid  = $questionapi->activity->id;
-        // $responseid  = $questionapi->response->id;
-
-        // $idsq = "";
-        // $nextid = false;
-        // $externaltoken = $usertoken->token;
-        // $baseurl = $siyavulaconfig->url_base;
-        // $currenturl = $PAGE->URL;
-
-        // $htmlquestion = get_html_question_standalone($questionapi->response->question_html, $activityid, $responseid);
-
-        // $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl, $token,
-        //     $externaltoken, $activityid, $responseid, $idsq, $currenturl->__toString(), $nextid,
-        //     $standalonestrip]);
-        // $result .= $htmlquestion;
-
         $renderer = $PAGE->get_renderer('filter_siyavula');
         $activityrenderable = new standalone_activity_renderable();
         $activityrenderable->baseurl = $baseurl;
@@ -186,11 +161,6 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                     $question->get_validation_error($responsearray),
                     array('class' => 'validationerror'));
         }
-
-        // $currenturl = $PAGE->URL;
-        // $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl, $token,
-        //     $externaltoken, $activityid, $responseid, $idsq, $currenturl->__toString(), $nextid,
-        //     $standalonestrip]);
 
         $url = $_SERVER["REQUEST_URI"];
         $findme  = '/mod/quiz/review.php';
