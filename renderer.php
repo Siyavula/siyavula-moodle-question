@@ -27,6 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/filter/siyavula/lib.php');
+use filter_siyavula\renderables\standalone_activity_renderable;
 
 /**
  * Generates the output for true-false questions.
@@ -68,11 +69,11 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $falsechecked = false;
         $responsearray = array();
         if ($response) {
-            $trueattributes['checked'] = 'checked';
+            // $trueattributes['checked'] = 'checked';
             $truechecked = true;
             $responsearray = array('answer' => 1);
         } else if ($response !== '') {
-            $falseattributes['checked'] = 'checked';
+            // $falseattributes['checked'] = 'checked';
             $falsechecked = true;
             $responsearray = array('answer' => 1);
         }
@@ -121,36 +122,52 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
         $randomseed = (isset($seed) ? $seed : rand(1, 99999));
 
-        $clientip       = $_SERVER['REMOTE_ADDR'];
+        $clientip = $_SERVER['REMOTE_ADDR'];
         $siyavulaconfig = get_config('filter_siyavula');
-
+        $baseurl = $siyavulaconfig->url_base;
         $token = siyavula_get_user_token($siyavulaconfig, $clientip);
-
         $usertoken = siyavula_get_external_user_token($siyavulaconfig, $clientip, $token);
+        $activitytype = 'standalone';
+        $templateid = $standalonestrip;
 
+        $PAGE->requires->js_call_amd('filter_siyavula/initmathjax', 'init');
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' =>
             $trueattributes, 'chkfalse' => $falseattributes]);
 
-        $siyavulaactivityid = $standalonestrip;
-        $questionapi = get_activity_standalone($siyavulaactivityid, $token, $usertoken->token,
-            $siyavulaconfig->url_base, $randomseed);
+        // $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' =>
+        //     $trueattributes, 'chkfalse' => $falseattributes]);
 
-        $activityid  = $questionapi->activity->id;
-        $responseid  = $questionapi->response->id;
+        // $siyavulaactivityid = $standalonestrip;
+        // $questionapi = get_activity_standalone($siyavulaactivityid, $token, $usertoken->token,
+        //     $siyavulaconfig->url_base, $randomseed);
 
-        $idsq = "";
-        $nextid = false;
-        $externaltoken = $usertoken->token;
-        $baseurl = $siyavulaconfig->url_base;
-        $currenturl = $PAGE->URL;
+        // $activityid  = $questionapi->activity->id;
+        // $responseid  = $questionapi->response->id;
 
-        $htmlquestion = get_html_question_standalone($questionapi->response->question_html, $activityid, $responseid);
+        // $idsq = "";
+        // $nextid = false;
+        // $externaltoken = $usertoken->token;
+        // $baseurl = $siyavulaconfig->url_base;
+        // $currenturl = $PAGE->URL;
 
-        $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl, $token,
-            $externaltoken, $activityid, $responseid, $idsq, $currenturl->__toString(), $nextid,
-            $standalonestrip]);
+        // $htmlquestion = get_html_question_standalone($questionapi->response->question_html, $activityid, $responseid);
 
-        $result .= $htmlquestion;
+        // $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl, $token,
+        //     $externaltoken, $activityid, $responseid, $idsq, $currenturl->__toString(), $nextid,
+        //     $standalonestrip]);
+        // $result .= $htmlquestion;
+
+        $renderer = $PAGE->get_renderer('filter_siyavula');
+        $activityrenderable = new standalone_activity_renderable();
+        $activityrenderable->baseurl = $baseurl;
+        $activityrenderable->token = $token;
+        $activityrenderable->usertoken = $usertoken->token;
+        $activityrenderable->activitytype = $activitytype;
+        $activityrenderable->templateid = $templateid;
+        $activityrenderable->randomseed = $randomseed;
+        $result .= $renderer->render_standalone_activity($activityrenderable);
+
+        //$result .= html_writer::start_tag('div', array('class' => 'ablock'));
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
         $result .= html_writer::tag('div', get_string('selectone', 'qtype_siyavulaqt'),
                 array('class' => 'prompt'));
@@ -169,6 +186,11 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                     $question->get_validation_error($responsearray),
                     array('class' => 'validationerror'));
         }
+
+        // $currenturl = $PAGE->URL;
+        // $PAGE->requires->js_call_amd('qtype_siyavulaqt/external', 'init', [$baseurl, $token,
+        //     $externaltoken, $activityid, $responseid, $idsq, $currenturl->__toString(), $nextid,
+        //     $standalonestrip]);
 
         $url = $_SERVER["REQUEST_URI"];
         $findme  = '/mod/quiz/review.php';
