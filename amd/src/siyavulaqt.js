@@ -1,32 +1,17 @@
-export const init = (chktrue, chkfalse) => {
-  var timer = window.setInterval(() => {
-    var height = $(".question-content")
-      .contents()
-      .find(".sv-region-main")
-      .height();
+define(["jquery", "core/ajax"], function ($, Ajax) {
+  return {
+    init: function (chktrue, chkfalse) {
+      window.setInterval(function () {
+        const $incorrect = $(".feedback--incorrect").length;
+        const $correct = $(".feedback--correct").length;
+        const $partiallyCorrect = $(".feedback--partly-correct").length;
 
-    var qtvalue = $(".question-content").contents().find(".sv-form__actions");
-    if (qtvalue.length) {
-      $(".question-content").contents().find(".sv-form__actions").remove();
-    }
-
-    $(".question-content").height(height + 40);
-
-    if (
-      $(".question-content").contents().find(".feedback--incorrect").length > 0
-    ) {
-      $('[for="' + chkfalse.id + '"]').click();
-    }
-    if (
-      $(".question-content").contents().find(".feedback--correct").length > 0
-    ) {
-      $('[for="' + chktrue.id + '"]').click();
-    }
-    if (
-      $(".question-content").contents().find(".feedback--partly-correct")
-        .length > 0
-    ) {
-      $('[for="' + chktrue.id + '"]').click();
-    }
-  }, 1000);
-};
+        if ($incorrect) {
+          $("[id='" + chkfalse.id + "']").prop("checked", "checked");
+        } else if ($correct || $partiallyCorrect) {
+          $("[id='" + chktrue.id + "']").prop("checked", "checked");
+        }
+      }, 1000);
+    },
+  };
+});
