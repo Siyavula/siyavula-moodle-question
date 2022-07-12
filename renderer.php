@@ -167,8 +167,9 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
         if ($pos === false) {
             return $result;
+        } else {
+            return $result;
         }
-
     }
 
     public function specific_feedback(question_attempt $qa) {
