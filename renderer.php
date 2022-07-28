@@ -188,7 +188,6 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                     $question->get_validation_error($responsearray),
                     array('class' => 'validationerror'));
         }
-
         return $result;
     }
 
