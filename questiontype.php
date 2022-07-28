@@ -119,6 +119,7 @@ class qtype_siyavulaqt extends question_type {
      * Loads the question type specific options for the question.
      */
     public function get_question_options($question) {
+
         global $DB, $OUTPUT;
         // Get additional information from database
         // and attach it to the question object.

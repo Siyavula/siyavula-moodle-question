@@ -27,6 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/filter/siyavula/lib.php');
+use filter_siyavula\renderables\get_activity_renderable;
 use filter_siyavula\renderables\standalone_activity_renderable;
 
 /**
@@ -39,12 +40,11 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
     public function formulation_and_controls(question_attempt $qa,
             question_display_options $options) {
         global $PAGE;
+        global $DB;
 
         $nextqt = optional_param('nextqr', '', PARAM_INT);
-
         $question = $qa->get_question();
         $response = $qa->get_last_qt_var('answer', '');
-
         $inputname = $qa->get_qt_field_name('answer');
         $trueattributes = array(
             'type' => 'radio',
@@ -58,7 +58,6 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
             'value' => 0,
             'id' => $inputname . 'false',
         );
-
         if ($options->readonly) {
             $trueattributes['disabled'] = 'disabled';
             $falseattributes['disabled'] = 'disabled';
@@ -98,6 +97,17 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                 html_writer::tag('label', get_string('false', 'qtype_siyavulaqt'),
                 array('for' => $falseattributes['id'], 'class' => 'ml-1'));
 
+        // Determine if we're on the feedback page.
+        $url = $_SERVER["REQUEST_URI"];
+        $findme  = '/mod/quiz/review.php';
+        $pos = strpos($url, $findme);
+
+        if ($pos === false) {
+            $isfeedback = false;
+        } else {
+            $isfeedback = true;
+        }
+
         $result = '';
 
         // Get the standalone.mustache.
@@ -130,17 +140,35 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
 
         $PAGE->requires->js_call_amd('filter_siyavula/initmathjax', 'init');
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' =>
-            $trueattributes, 'chkfalse' => $falseattributes]);
+            $trueattributes, 'chkfalse' => $falseattributes, 'questionId' => $question->id]);
 
         $renderer = $PAGE->get_renderer('filter_siyavula');
-        $activityrenderable = new standalone_activity_renderable();
-        $activityrenderable->baseurl = $baseurl;
-        $activityrenderable->token = $token;
-        $activityrenderable->usertoken = $usertoken->token;
-        $activityrenderable->activitytype = $activitytype;
-        $activityrenderable->templateid = $templateid;
-        $activityrenderable->randomseed = $randomseed;
-        $result .= $renderer->render_standalone_activity($activityrenderable);
+        if (!$isfeedback) {
+            $activityrenderable = new standalone_activity_renderable();
+            $activityrenderable->baseurl = $baseurl;
+            $activityrenderable->token = $token;
+            $activityrenderable->usertoken = $usertoken->token;
+            $activityrenderable->activitytype = $activitytype;
+            $activityrenderable->templateid = $templateid;
+            $activityrenderable->randomseed = $randomseed;
+            $result .= $renderer->render_standalone_activity($activityrenderable);
+        } else {
+            $activityid = $DB->get_field(
+                'question_siyavulaqt', 'activityid', array('question' => $question->id)
+            );
+            $responseid = $DB->get_field(
+                'question_siyavulaqt', 'responseid', array('question' => $question->id)
+            );
+
+            $activityrenderable = new get_activity_renderable();
+            $activityrenderable->baseurl = $baseurl;
+            $activityrenderable->token = $token;
+            $activityrenderable->usertoken = $usertoken->token;
+            $activityrenderable->activitytype = '';
+            $activityrenderable->activityid = $activityid;
+            $activityrenderable->responseid = $responseid;
+            $result .= $renderer->render_get_activity($activityrenderable);
+        }
 
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
         $result .= html_writer::tag('div', get_string('selectone', 'qtype_siyavulaqt'),
@@ -161,14 +189,7 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                     array('class' => 'validationerror'));
         }
 
-        $url = $_SERVER["REQUEST_URI"];
-        $findme  = '/mod/quiz/review.php';
-        $pos = strpos($url, $findme);
-
-        if ($pos === false) {
-            return $result;
-        }
-
+        return $result;
     }
 
     public function specific_feedback(question_attempt $qa) {

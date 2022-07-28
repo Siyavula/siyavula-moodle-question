@@ -35,5 +35,24 @@ function xmldb_qtype_siyavulaqt_upgrade($oldversion = 0) {
     global $CFG, $DB;
 
     $dbman = $DB->get_manager();
+
+    if ($oldversion < 2022072705) {
+
+        // Define table question_siyavulaqt to be created.
+        $table = new xmldb_table('question_siyavulaqt');
+        $activityid = new xmldb_field('activityid', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        $responseid = new xmldb_field('responseid', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+
+        if (!$dbman->field_exists($table, $activityid)) {
+            $dbman->add_field($table, $activityid);
+        }
+        if (!$dbman->field_exists($table, $responseid)) {
+            $dbman->add_field($table, $responseid);
+        }
+
+        // Siyavulaqt savepoint reached.
+        upgrade_plugin_savepoint(true, 2022072705, 'qtype', 'siyavulaqt');
+    }
+
     return true;
 }
