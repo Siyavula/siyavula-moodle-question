@@ -160,14 +160,8 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                 'question_siyavulaqt', 'responseid', array('question' => $question->id)
             );
 
-            $activityrenderable = new get_activity_renderable();
-            $activityrenderable->baseurl = $baseurl;
-            $activityrenderable->token = $token;
-            $activityrenderable->usertoken = $usertoken->token;
-            $activityrenderable->activitytype = '';
-            $activityrenderable->activityid = $activityid;
-            $activityrenderable->responseid = $responseid;
-            $result .= $renderer->render_get_activity($activityrenderable);
+            $result = get_activity_response($token, $usertoken, $baseurl, $activityid, $responseid);
+            return $result->response->question_html;
         }
 
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
