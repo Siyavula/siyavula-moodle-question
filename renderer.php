@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/filter/siyavula/lib.php');
-use filter_siyavula\renderables\get_activity_renderable;
+use filter_siyavula\renderables\question_feedback_renderable;
 use filter_siyavula\renderables\standalone_activity_renderable;
 
 /**
@@ -160,10 +160,13 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                 'question_siyavulaqt', 'responseid', array('question' => $question->id)
             );
 
-            $result = get_activity_response($token, $usertoken->token, $baseurl, $activityid, $responseid);
-            $htmlanswer = $result->response->question_html;
-            $htmlanswer .= "<script>MathJax.Hub.Queue(['Typeset', MathJax.Hub]);</script>";
-            return $htmlanswer;
+            $response = get_activity_response($token, $usertoken->token, $baseurl, $activityid, $responseid);
+
+            $activityrenderable = new question_feedback_renderable();
+            $activityrenderable->baseurl = $baseurl;
+            $activityrenderable->html = $response->response->question_html;
+
+            return $renderer->render_question_feedback($activityrenderable);
         }
 
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
