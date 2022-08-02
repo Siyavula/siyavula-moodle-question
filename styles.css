@@ -10,3 +10,7 @@ body, html{
 .que.siyavulaqt .sv-form__actions {
     display: none;
 }
+
+#show-hide-solution {
+    visibility: hidden;
+}

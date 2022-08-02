@@ -160,14 +160,10 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                 'question_siyavulaqt', 'responseid', array('question' => $question->id)
             );
 
-            $activityrenderable = new get_activity_renderable();
-            $activityrenderable->baseurl = $baseurl;
-            $activityrenderable->token = $token;
-            $activityrenderable->usertoken = $usertoken->token;
-            $activityrenderable->activitytype = '';
-            $activityrenderable->activityid = $activityid;
-            $activityrenderable->responseid = $responseid;
-            $result .= $renderer->render_get_activity($activityrenderable);
+            $result = get_activity_response($token, $usertoken->token, $baseurl, $activityid, $responseid);
+            $htmlanswer = $result->response->question_html;
+            $htmlanswer .= "<script>MathJax.Hub.Queue(['Typeset', MathJax.Hub]);</script>";
+            return $htmlanswer;
         }
 
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
@@ -188,7 +184,6 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                     $question->get_validation_error($responsearray),
                     array('class' => 'validationerror'));
         }
-
         return $result;
     }
 

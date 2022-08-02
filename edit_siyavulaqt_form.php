@@ -45,7 +45,7 @@ class qtype_siyavulaqt_edit_form extends question_edit_form {
      */
     protected function definition_inner($mform) {
         $mform->addElement('hidden', 'correctanswer', 1);
-        $mform->setType('penalty', PARAM_INT);
+        $mform->setType('correctanswer', PARAM_INT);
 
         $mform->addElement(
             'editor', 'feedbacktrue',
