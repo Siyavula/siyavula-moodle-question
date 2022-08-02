@@ -160,8 +160,10 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                 'question_siyavulaqt', 'responseid', array('question' => $question->id)
             );
 
-            $result = get_activity_response($token, $usertoken, $baseurl, $activityid, $responseid);
-            return $result->response->question_html;
+            $result = get_activity_response($token, $usertoken->token, $baseurl, $activityid, $responseid);
+            $htmlanswer = $result->response->question_html;
+            $htmlanswer .= "<script>MathJax.Hub.Queue(['Typeset', MathJax.Hub]);</script>";
+            return $htmlanswer;
         }
 
         $result .= html_writer::start_tag('div', array('class' => 'ablock', 'style' => 'display: none;'));
