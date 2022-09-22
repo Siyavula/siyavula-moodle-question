@@ -28,5 +28,4 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'qtype_siyavulaqt';
 $plugin->version   = 2022092200;
 $plugin->requires  = 2019111809;
-
 $plugin->maturity  = MATURITY_STABLE;
