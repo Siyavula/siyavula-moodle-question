@@ -39,8 +39,7 @@ use filter_siyavula\renderables\standalone_activity_renderable;
 class qtype_siyavulaqt_renderer extends qtype_renderer {
     public function formulation_and_controls(question_attempt $qa,
             question_display_options $options) {
-        global $PAGE;
-        global $DB;
+        global $PAGE, $CFG, $DB;
 
         $nextqt = optional_param('nextqr', '', PARAM_INT);
         $question = $qa->get_question();
