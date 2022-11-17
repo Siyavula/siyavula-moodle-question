@@ -145,6 +145,7 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $renderer = $PAGE->get_renderer('filter_siyavula');
         if (!$isfeedback) {
             $activityrenderable = new standalone_activity_renderable();
+            $activityrenderable->wwwroot = $CFG->wwwroot;
             $activityrenderable->baseurl = $baseurl;
             $activityrenderable->token = $token;
             $activityrenderable->usertoken = $usertoken->token;
@@ -163,6 +164,7 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
             $response = get_activity_response($token, $usertoken->token, $baseurl, $activityid, $responseid);
 
             $activityrenderable = new question_feedback_renderable();
+            $activityrenderable->wwwroot = $CFG->wwwroot;
             $activityrenderable->baseurl = $baseurl;
             $activityrenderable->html = $response->response->question_html;
 
