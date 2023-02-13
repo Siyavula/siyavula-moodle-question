@@ -14,3 +14,27 @@ body, html{
 #show-hide-solution {
     visibility: hidden;
 }
+
+.feedback .feedback--1 .feedback--incorrect {
+    display: none;
+}
+
+.feedback .feedback--1 .feedback--empty {
+    display: none;
+}
+
+.feedback .feedback--1 .feedback--correct {
+    display: none;
+}
+
+.feedback .feedback--1 .feedback--empty {
+    display: none;
+}
+
+#incorrect-solution {
+    display: none;
+}
+
+.attempts {
+    visibility: hidden;
+}
