@@ -12,5 +12,29 @@ body, html{
 }
 
 #show-hide-solution {
-    visibility: hidden;
+    display: none;
+}
+
+#page-mod-quiz-attempt .feedback--incorrect {
+    display: none;
+}
+
+#page-mod-quiz-attempt .feedback--empty {
+    display: none;
+}
+
+#page-mod-quiz-attempt .feedback--correct {
+    display: none;
+}
+
+#page-mod-quiz-attempt .feedback--empty {
+    display: none;
+}
+
+#page-mod-quiz-attempt #incorrect-solution {
+    display: none;
+}
+
+#page-mod-quiz-attempt .attempts {
+    display: none;
 }
