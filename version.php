@@ -29,12 +29,5 @@ $plugin->component = 'qtype_siyavulaqt';
 $plugin->version   = 2023021301;
 $plugin->requires  = 2019111809;
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->supported = [
-    383,
-    400,
-    410,
-    420,
-    430,
-    440
-];
+$plugin->supported = [38, 444];
 $plugin->release = '1.1.0';
