@@ -41,6 +41,8 @@ class qtype_siyavulaqt_question extends question_graded_automatically {
     public $falsefeedback;
     public $trueanswerid;
     public $falseanswerid;
+    public $truefeedbackformat;
+    public $falsefeedbackformat;
 
     public function get_expected_data() {
         return array('answer' => PARAM_INT);
