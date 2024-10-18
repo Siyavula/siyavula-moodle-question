@@ -137,7 +137,13 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $activitytype = 'standalone';
         $templateid = $standalonestrip;
 
-        $PAGE->requires->js_call_amd('filter_siyavula/initmathjax', 'init');
+        // Current version is Moodle 4.0 or higher use the event types. Otherwise use the older versions.
+        if ($CFG->version >= 2022041912) {
+            $PAGE->requires->js_call_amd('filter_siyavula/initmathjax', 'init');
+        } else {
+            $PAGE->requires->js_call_amd('filter_siyavula/initmathjax-backward', 'init');
+        }
+
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' =>
             $trueattributes, 'chkfalse' => $falseattributes, 'questionId' => $question->id]);
 
