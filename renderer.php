@@ -127,19 +127,16 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
             $standalonestrip = $standalonestrip[0];
         }
 
-        $randomseed = (isset($seed) ? $seed : rand(1, 99999));
+        $renderer = $PAGE->get_renderer('filter_siyavula');
+        $tokendata = $renderer->get_token_data();
 
-        $clientip = $_SERVER['REMOTE_ADDR'];
-        $siyavulaconfig = get_config('filter_siyavula');
-        $baseurl = $siyavulaconfig->url_base;
-        $token = siyavula_get_user_token($siyavulaconfig, $clientip);
-        $usertoken = siyavula_get_external_user_token($siyavulaconfig, $clientip, $token);
         $activitytype = 'standalone';
         $templateid = $standalonestrip;
+        $randomseed = (isset($seed) ? $seed : rand(1, 99999));
 
         // Current version is Moodle 4.0 or higher use the event types. Otherwise use the older versions.
         if ($CFG->version >= 2022041912) {
-            $PAGE->requires->js_call_amd('filter_siyavula/initmathjax', 'init');
+            $PAGE->requires->js_call_amd('filter_siyavula/initmathjax', 'init', ['issupported' => $CFG->version <= 2025040100]);
         } else {
             $PAGE->requires->js_call_amd('filter_siyavula/initmathjax-backward', 'init');
         }
@@ -147,17 +144,17 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
         $PAGE->requires->js_call_amd('qtype_siyavulaqt/siyavulaqt', 'init', ['chktrue' =>
             $trueattributes, 'chkfalse' => $falseattributes, 'questionId' => $question->id]);
 
-        $renderer = $PAGE->get_renderer('filter_siyavula');
         if (!$isfeedback) {
+
             $activityrenderable = new standalone_activity_renderable();
-            $activityrenderable->wwwroot = $CFG->wwwroot;
-            $activityrenderable->baseurl = $baseurl;
-            $activityrenderable->token = $token;
-            $activityrenderable->usertoken = $usertoken->token;
             $activityrenderable->activitytype = $activitytype;
             $activityrenderable->templateid = $templateid;
             $activityrenderable->randomseed = $randomseed;
+            $activityrenderable->uniqueid = uniqid('siyavula-activity-');
+
             $result .= $renderer->render_standalone_activity($activityrenderable);
+            $result .= $renderer->render_assets([$activityrenderable], $tokendata);
+
         } else {
             $activityid = $DB->get_field(
                 'question_siyavulaqt', 'activityid', array('question' => $question->id)
@@ -166,11 +163,11 @@ class qtype_siyavulaqt_renderer extends qtype_renderer {
                 'question_siyavulaqt', 'responseid', array('question' => $question->id)
             );
 
-            $response = get_activity_response($token, $usertoken->token, $baseurl, $activityid, $responseid);
+            $response = get_activity_response($tokendata->token, $tokendata->usertoken, $tokendata->baseurl, $activityid, $responseid);
 
             $activityrenderable = new question_feedback_renderable();
             $activityrenderable->wwwroot = $CFG->wwwroot;
-            $activityrenderable->baseurl = $baseurl;
+            $activityrenderable->baseurl = $tokendata->baseurl;
             $activityrenderable->html = $response->response->question_html;
 
             return $renderer->render_question_feedback($activityrenderable);

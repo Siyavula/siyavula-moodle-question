@@ -14,7 +14,19 @@ define(["jquery", "core/ajax"], function ($, Ajax) {
       }, 1000);
 
       $("form").on("submit", function (e) {
-        const { activityId, responseId } = window.state;
+
+        window.siyavulaActivities = window.siyavulaActivities || {};
+
+        const containerID = e.target.querySelector('[id*="siyavula-activity-"]')?.id;
+        if (!containerID) {
+            return;
+        }
+
+        const uniqueid = `#${containerID}`;
+        const standalone = window.siyavulaActivities[uniqueid];
+
+        const activityId = standalone.currentActivity.id;
+        const responseId = standalone.currentActivity.response.id;
 
         var submitresponse = Ajax.call([
           {
