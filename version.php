@@ -31,3 +31,7 @@ $plugin->requires  = 2019111809;
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->supported = [311, 405];
 $plugin->release = '1.2.1';
+$plugin->dependencies = [
+    'filter_siyavula' => 2024102200,
+];
+
