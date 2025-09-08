@@ -19,19 +19,19 @@
  *
  * @package    qtype
  * @subpackage siyavulaqt
- * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @copyright  1999 Siyavula
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qtype_siyavulaqt';
-$plugin->version   = 2024102401;
+$plugin->version   = 2025090800;
 $plugin->requires  = 2019111809;
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->supported = [311, 502];
-$plugin->release = '1.2.1';
+$plugin->release = '2.0.0';
 $plugin->dependencies = [
-    'filter_siyavula' => 2024102200,
+    'filter_siyavula' => 2025090800,
 ];
 
